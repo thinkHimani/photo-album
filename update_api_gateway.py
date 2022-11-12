@@ -3,9 +3,9 @@ from pathlib import Path
 import boto3
 import argparse
 from botocore.client import ClientError
- 
+
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--stackname", help = "Name of stack created for stack_1.yaml", default='test1')
+parser.add_argument("-s", "--stackname", help = "Name of stack created for stack_1.yaml", default='stack-1')
 parser.add_argument("-b", "--bucketname", help = "Name of the bucket in which api gate way will go", default='lambda-code-cc-cf')
 args = parser.parse_args()
 
@@ -13,6 +13,7 @@ client = boto3.client("sts")
 account_id = client.get_caller_identity()["Account"]
 
 cloudformation = boto3.resource('cloudformation')
+# print(account_id)
 stack_apis3arn = cloudformation.StackResource(args.stackname,'apigateways3role')
 apigateways3rolearn = stack_apis3arn.physical_resource_id
 

@@ -29,11 +29,11 @@ Parameters:
     Default: lambda-code-cc-cf
   GitHubOwner:
     Type: String
-    Default: aniketbote
+    Default: thinkHimani
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubRepo:
     Type: String
-    Default: cc-assignment-2
+    Default: photo-album
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubBranch:
     Type: String
@@ -41,7 +41,7 @@ Parameters:
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubOAuthToken:
     Type: String
-    Default: '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'
+    Default: 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
     NoEcho: true
 Resources:
   # Frontent code pipeline
@@ -307,7 +307,7 @@ Resources:
                 - aws lambda update-function-code --function-name ${lf2name} --zip-file fileb://deployment_package_2.zip
                 - echo "DONE!!"
 
-        Location: https://github.com/aniketbote/cc-assignment-2.git
+        Location: https://github.com/thinkHimani/photo-album.git
         Type: GITHUB
       Triggers:
         Webhook: True
@@ -371,38 +371,38 @@ Resources:
                 - Name: 'ai-app'
               Region: us-east-1
 
-  opensearchphotos:
-    Type: AWS::OpenSearchService::Domain
-    Properties:
-      AccessPolicies:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: '*'
-            Action: es:*
-            Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${domainname}/*"
-      AdvancedSecurityOptions:
-        Enabled: True
-        InternalUserDatabaseEnabled: True
-        MasterUserOptions:
-          MasterUserName: !Ref masterusername
-          MasterUserPassword: !Ref masterpassword
-      ClusterConfig:
-        InstanceCount: 1
-        InstanceType: t3.small.search
-      DomainEndpointOptions:
-        EnforceHTTPS: True
-      DomainName: !Ref domainname
-      EBSOptions:
-        EBSEnabled: True
-        VolumeSize: 10
-        VolumeType: gp2
-      EncryptionAtRestOptions:
-        Enabled: True
-      EngineVersion: Elasticsearch_7.10
-      NodeToNodeEncryptionOptions:
-          Enabled: True
+  # opensearchphotos:
+  #   Type: AWS::OpenSearchService::Domain
+  #   Properties:
+  #     AccessPolicies:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             AWS: '*'
+  #           Action: es:*
+  #           Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${domainname}/*"
+  #     AdvancedSecurityOptions:
+  #       Enabled: True
+  #       InternalUserDatabaseEnabled: True
+  #       MasterUserOptions:
+  #         MasterUserName: !Ref masterusername
+  #         MasterUserPassword: !Ref masterpassword
+  #     ClusterConfig:
+  #       InstanceCount: 1
+  #       InstanceType: t3.small.search
+  #     DomainEndpointOptions:
+  #       EnforceHTTPS: True
+  #     DomainName: !Ref domainname
+  #     EBSOptions:
+  #       EBSEnabled: True
+  #       VolumeSize: 10
+  #       VolumeType: gp2
+  #     EncryptionAtRestOptions:
+  #       Enabled: True
+  #     EngineVersion: Elasticsearch_7.10
+  #     NodeToNodeEncryptionOptions:
+  #         Enabled: True
 
 
   
