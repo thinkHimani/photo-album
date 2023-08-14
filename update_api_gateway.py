@@ -6,7 +6,7 @@ from botocore.client import ClientError
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--stackname", help = "Name of stack created for stack_1.yaml", default='stack-1')
-parser.add_argument("-b", "--bucketname", help = "Name of the bucket in which api gate way will go", default='lambda-code-cc-cf')
+parser.add_argument("-b", "--bucketname", help = "Name of the bucket in which api gate way will go", default='ht2191-cf-lambdafunctions')
 args = parser.parse_args()
 
 client = boto3.client("sts")
@@ -37,6 +37,3 @@ if bucket.creation_date:
 else:
     s3_client.create_bucket(args.bucketname)
     response = s3_client.upload_file("api_gateway.yaml", args.bucketname, "AI-Photo-Search-v1-swagger-apigateway-v1.yaml")
-
-# print(f"arn:aws:lambda:us-east-1:{account_id}:function:{lf2arn}")
-# aws cloudformation create-stack --template-body file://stack_2.yaml --capabilities CAPABILITY_IAM --stack-name test2 --parameters ParameterKey=lf2arn,ParameterValue=arn:aws:lambda:us-east-1:227712325985:function:lf2-cf

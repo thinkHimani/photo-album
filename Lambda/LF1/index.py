@@ -1,5 +1,4 @@
 import json
-import logging
 import boto3
 import uuid
 import requests
@@ -7,28 +6,24 @@ import json
 from datetime import datetime
 from pprint import pprint
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
-
 def lambda_handler(event, context):
-    # TODO implement
-    
-    logger.debug(f"[USER][EVENT] {event}")
+    # Testing pipeline Final Test 2 and more
+    print("event: ", event)
+    print("event: ", event)
     
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     image_name = event['Records'][0]['s3']['object']['key']
-    logger.debug(f"[USER][NAME] Bucket: {bucket_name}  Image: {image_name}")
+    print("bucket_name: ", bucket_name)
     
     client_rec =boto3.client('rekognition', region_name = 'us-east-1')
     response_res = client_rec.detect_labels(Image={'S3Object':{'Bucket':bucket_name,'Name':image_name}},
         MaxLabels=10)
-    logger.debug(f"[USER][RECOGNITION] {response_res}")
-    # print("Recognition Done")
+    print("response_res: ", response_res)
+    print("Recognition Done")
     
     client_s3 = boto3.client('s3')
     response_s3 = client_s3.head_object(Bucket=bucket_name, Key=image_name)
-    logger.debug(f"[USER][S3] {response_s3}")
+    print("response_s3: ", response_s3)
     
     meta_labels = []
     try:
@@ -43,22 +38,19 @@ def lambda_handler(event, context):
     a1["bucket"] = bucket_name
     a1["createdTimestamp"] = str(datetime.now())
     a1["labels"] = labels
-    logger.debug(f"[USER][ES JSON] {a1}")
+    print("a1: ", a1)
     
-    host = 'https://search-search-cf-7ochiafkyifi227dwioysmofsm.us-east-1.es.amazonaws.com'
-    _index = 'photos'
+    host = 'https://search-ht2191-cf-search-photo-jggmm2xunwwj5zld46m6wunjcy.us-east-1.es.amazonaws.com'
+    _index = 'ht2191-cf-search-photo'
     _type = 'Photo'
     _id = uuid.uuid1().hex
     
     path = '/{}/{}/{}/'.format(_index, _type, _id)
-    master_user = "test"
-    master_password = "Test@1234"
+    master_user = "ht2191"
+    master_password = "Xyz123@abc"
     
     url = host + path
     r = requests.post(url, auth=(master_user, master_password), json=a1)
-    logger.debug(json.loads(r.content))
-    
-
     
     return {
         'statusCode': 200,

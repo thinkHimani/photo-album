@@ -41,9 +41,6 @@ function voiceSearch(){
     }
 }
 
-
-
-
 function textSearch() {
     var searchText = document.getElementById('search_query');
     if (!searchText.value) {
@@ -79,11 +76,16 @@ function searchPhotos(searchText) {
             photosDiv.innerHTML = "";
 
             var n;
-            for (n = 0; n < image_paths.length; n++) {
+            if (image_paths.length==0) {
+                photosDiv.innerHTML += '<p class="search_info" style="margin-top: 20px;">No Image Found.</p>';
+            }
+            else{
+                for (n = 0; n < image_paths.length; n++) {
                 images_list = image_paths[n].split('/');
                 imageName = images_list[images_list.length - 1];
 
-                photosDiv.innerHTML += '<figure><img src="' + image_paths[n] + '" style="width:25%"><figcaption>' + imageName + '</figcaption></figure>';
+                photosDiv.innerHTML += '<figure><img src="' + image_paths[n] + '" style="width:25%; margin-top: 20px;"><figcaption>' + imageName + '</figcaption></figure>';
+                }
             }
 
         }).catch(function(result) {
@@ -105,11 +107,11 @@ function uploadPhoto() {
     document.getElementById('uploaded_file').value = "";
 
     if ((filePath == "") || (!['png', 'jpg', 'jpeg'].includes(fileName.split(".")[1]))) {
-        alert("Please upload a valid .png/.jpg/.jpeg file!");
+        alert("Please upload a valid .png/.jpg/.jpeg file! File name should not contain '.'");
     } else {
 
         var params = {
-            "bucket" : "cc-b2-cf", 
+            "bucket" : "ht2191-cf-b2", 
             "filename": fileName,
             'Content-Type': "image/" + filePath.toString().split(".")[1] + ';base64',
             'x-amz-meta-customLabels' : custom_labels.value,

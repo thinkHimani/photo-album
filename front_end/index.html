@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Testing Pipeline Final Test 2 -->
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="style.css">
+		<!-- api gateway generated sdk -->
+	<script src="./assets/js/sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script src="./assets/js/sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script src="./assets/js/sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script src="./assets/js/sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script src="./assets/js/sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script src="./assets/js/sdk/lib/url-template/url-template.js"></script>
+	<script src="./assets/js/sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script src="./assets/js/sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script src="./assets/js/sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script src="./assets/js/sdk/lib/apiGatewayCore/utils.js"></script>
+
+	<script src="./assets/js/sdk/apigClient.js"></script>
+
+	<script src="./assets/js/aws-sdk.min.js"></script>
+	<title>Photo Album</title>
+</head>
+<body>
+	<div class="container">
+		<div class="row d-flex justify-content-center align-items-center tm-p-10">
+			<h2 class="text-center">Photo Album</h2>
+			<div class="col-md-6 tm-60">
+				
+				<div class="row gy-2 gx-3 align-items-center" >
+					<div class="col-auto">
+							<input class="form-control form-control-md" id="uploaded_file" name="filename" type="file" />
+						</div>
+						<div class="col-auto">
+							<div class="form-outline">
+								<input type="text" id="custom_labels" class="form-control" name="custom_labels" placeholder="Labels" />
+							</div>
+						</div>
+						<div class="col-auto">
+							<button type="submit" class="btn btn-primary" onclick="uploadPhoto()">Upload</button>
+						</div>
+						<center><p id="uploadText" style="display:hidden; font-size: 15px;"></p></center>
+					</div>
+
+				<div class="form">
+				<div  method="get" id="search_photos">
+                  <i class="fa fa-search"></i>
+                  <input name="search_query" id = "search_query" type="text" autocomplete="off" autofocus class="form-control form-input" placeholder="Search anything...">
+                  <span class="left-pan"><i class="medium material-icons" id="mic_search" onclick="voiceSearch()">mic</i></span>
+                  <p class="search_info">Click the microphone to start or stop recording.</p>
+                  <button type="submit" class="btn btn-primary" id="searchPhotos" name="searchPhotos" onclick="textSearch()">Search</button>
+                  </div>
+              </div>
+              <div class="row">
+            	<div id="photos_search_results">
+            	</div>
+        	  </div>
+
+          </div>
+      </div>
+  </div>
+
+  <!-- Bootstrap JavaScript -->
+  <script href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

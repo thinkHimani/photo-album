@@ -2,54 +2,38 @@ Parameters:
   ccbucketname:
     Description: The name of the S3 bucket to be created.
     Type: String
-    Default: cc-b2-cf
+    Default: ht2191-cf-b2
   lf1name:
     Description: The name of the lf1 lambda function to be created.
     Type: String
-    Default: lf1-cf
+    Default: ht2191-cf-lf1
   lf2name:
     Description: The name of the lf2 lambda function to be created.
     Type: String
-    Default: lf2-cf
+    Default: ht2191-cf-lf2
   domainname:
     Description: The name of the opensearch domain
     Type: String
-    Default: search-cf
+    Default: ht2191-cf-search-photo
   masterusername:
     Description: Username for opensearch.
     Type: String
-    Default: test
+    Default: ht2191
   masterpassword:
     Description: Password for opensearch.
     Type: String
-    Default: Test@1234
+    Default: Xyz123@abc
   artifactname:
     Description: Name of the bucket in which code resides.
     Type: String
-    Default: lambda-code-cc-cf
-  codebucket:
-    Description: Name of the bucket in which code resides.
-    Type: String
-    Default: lambda-code-cc
-  # lf1key:
-  #   Description: Key of LF1 deployment package{zip file containing code}.
-  #   Type: String
-  #   Default: LF1-v2-80a95cdf-07c1-43c5-83cf-e47e5c257bf1.zip
-  # lf2key:
-  #   Description: Key of LF2 deployment package{zip file containing code}.
-  #   Type: String
-  #   Default: LF2-v2-c526e785-3007-4f25-ba06-5091ceda4ba8.zip
-  swaggerkey:
-    Description: Key of swagger file.
-    Type: String
-    Default: "AI-Photo-Search-v1-swagger-apigateway-v1.yaml"
+    Default: ht2191-cf-lambdafunctions
   GitHubOwner:
     Type: String
-    Default: aniketbote
+    Default: thinkHimani
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubRepo:
     Type: String
-    Default: cc-assignment-2
+    Default: cc-photo-album
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubBranch:
     Type: String
@@ -57,15 +41,15 @@ Parameters:
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubOAuthToken:
     Type: String
-    Default: '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'
+    Default: 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
     NoEcho: true
+
 Resources:
   # Frontent code pipeline
   artifactbucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref artifactname
-
 
   frontendbucket:
     Type: AWS::S3::Bucket
@@ -107,7 +91,6 @@ Resources:
       Description: 'Role for codepipeline to access S3'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
-
 
   # Architecture
   ccbucket2:
@@ -192,7 +175,7 @@ Resources:
           # Code from cloud formation
       FunctionName: !Ref lf1name
       Role: !GetAtt lf1role.Arn
-      Runtime: python3.8
+      Runtime: python3.9
       Timeout: 15
       Handler: index.lambda_handler
     DependsOn: lf1role
@@ -228,7 +211,7 @@ Resources:
           # Code from cloud formation
       FunctionName: !Ref lf2name
       Role: !GetAtt lf2role.Arn
-      Runtime: python3.8
+      Runtime: python3.9
       Timeout: 15
       Handler: index.lambda_handler
     DependsOn: lf2role
@@ -255,31 +238,6 @@ Resources:
           - !Ref lf2
     DependsOn: lf2
   
-  aiapigateway:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      BodyS3Location:
-        Bucket: !Ref codebucket
-        Key: !Ref swaggerkey
-      Name: ai-api-gateway
-      FailOnWarnings: True
-      EndpointConfiguration:
-        Types:
-          - 'REGIONAL'
-    DependsOn: apigateways3role
-  
-  permissionapigatewaylf2:
-    Type: 'AWS::Lambda::Permission'
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt lf2.Arn
-      Principal: apigateway.amazonaws.com
-      SourceAccount: !Ref 'AWS::AccountId'
-      SourceArn: !Join
-        - ''
-        - - 'arn:aws:apigateway:us-east-1::/restapis/'
-          - !Ref aiapigateway
-          - '/resources/*/methods/GET'
   
   apigateways3role:
     Type: AWS::IAM::Role
@@ -294,13 +252,6 @@ Resources:
       ManagedPolicyArns:
       - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
       - "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-  
-  apideploymentv1:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      Description: The v1 deployment of search photos
-      RestApiId: !Ref aiapigateway
-      StageName: v1
 
   codebuildservicerole:
     Type: AWS::IAM::Role
@@ -335,10 +286,11 @@ Resources:
           phases:
             install:
               runtime-versions:
-                python: 3.8
+                python: 3.9
               commands:
                 - echo "Installing dependencies..."
                 - pip install requests -t lib
+                - pip install inflect -t lib
             build:
               commands:
                 - echo "Zipping deployment package..."
@@ -355,7 +307,7 @@ Resources:
                 - aws lambda update-function-code --function-name ${lf2name} --zip-file fileb://deployment_package_2.zip
                 - echo "DONE!!"
 
-        Location: https://github.com/aniketbote/cc-assignment-2.git
+        Location: https://github.com/thinkHimani/cc-photo-album.git
         Type: GITHUB
       Triggers:
         Webhook: True
@@ -419,40 +371,38 @@ Resources:
                 - Name: 'ai-app'
               Region: us-east-1
 
-
-
-  # opensearchphotos:
-  #   Type: AWS::OpenSearchService::Domain
-  #   Properties:
-  #     AccessPolicies:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             AWS: '*'
-  #           Action: es:*
-  #           Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${domainname}/*"
-  #     AdvancedSecurityOptions:
-  #       Enabled: True
-  #       InternalUserDatabaseEnabled: True
-  #       MasterUserOptions:
-  #         MasterUserName: !Ref masterusername
-  #         MasterUserPassword: !Ref masterpassword
-  #     ClusterConfig:
-  #       InstanceCount: 1
-  #       InstanceType: t3.small.search
-  #     DomainEndpointOptions:
-  #       EnforceHTTPS: True
-  #     DomainName: !Ref domainname
-  #     EBSOptions:
-  #       EBSEnabled: True
-  #       VolumeSize: 10
-  #       VolumeType: gp2
-  #     EncryptionAtRestOptions:
-  #       Enabled: True
-  #     EngineVersion: Elasticsearch_7.10
-  #     NodeToNodeEncryptionOptions:
-  #         Enabled: True
+  opensearchphotos:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action: es:*
+            Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${domainname}/*"
+      AdvancedSecurityOptions:
+        Enabled: True
+        InternalUserDatabaseEnabled: True
+        MasterUserOptions:
+          MasterUserName: !Ref masterusername
+          MasterUserPassword: !Ref masterpassword
+      ClusterConfig:
+        InstanceCount: 1
+        InstanceType: t3.small.search
+      DomainEndpointOptions:
+        EnforceHTTPS: True
+      DomainName: !Ref domainname
+      EBSOptions:
+        EBSEnabled: True
+        VolumeSize: 10
+        VolumeType: gp2
+      EncryptionAtRestOptions:
+        Enabled: True
+      EngineVersion: Elasticsearch_7.10
+      NodeToNodeEncryptionOptions:
+          Enabled: True
 
 
   

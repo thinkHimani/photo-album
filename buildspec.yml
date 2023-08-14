@@ -2,22 +2,30 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.9
     commands:
       - echo "Installing dependencies..."
       - pip install requests -t lib
+      - pip install inflect -t lib
   build:
     commands:
       - echo "Zipping deployment package..."
+      - echo $(ls)
       - cd lib
+      - echo "Inside lib"
+      - echo $(ls)
       - zip -r9 ../deployment_package_1.zip .
       - zip -r9 ../deployment_package_2.zip .
       - cd ..
-      - zip -r -j deployment_package_1.zip "Lambda/LF1/lambda_function.py"
-      - zip -r -j deployment_package_2.zip "Lambda/LF2/lambda_function.py"
+      - echo "r9 done"
+      - echo $(ls)
+      - zip -r -j deployment_package_1.zip "Lambda/LF1/index.py"
+      - zip -r -j deployment_package_2.zip "Lambda/LF2/index.py"
   post_build:
     commands:
       - echo "Updating lambda Function..."
-      - aws lambda update-function-code --function-name LF1-v2 --zip-file fileb://deployment_package_1.zip
-      - aws lambda update-function-code --function-name LF2-v2 --zip-file fileb://deployment_package_2.zip
+      - aws lambda update-function-code --function-name cp-lf1 --zip-file fileb://deployment_package_1.zip
+      - aws lambda update-function-code --function-name cp-lf2 --zip-file fileb://deployment_package_2.zip
+      - echo $(ls)
       - echo "DONE!!"
+      

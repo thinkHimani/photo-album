@@ -39,7 +39,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
-        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:191733089971:function:lf2-cf/invocations"
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:191733089971:function:ht2191-cf-lf2/invocations"
         responses:
           default:
             statusCode: "200"
@@ -118,7 +118,7 @@ paths:
             $ref: "#/definitions/Error"
       x-amazon-apigateway-integration:
         type: "aws"
-        credentials: "arn:aws:iam::191733089971:role/stack-1-apigateways3role-J4GN4KFSUG26"
+        credentials: "arn:aws:iam::191733089971:role/stack-1-apigateways3role-MQFKG9KZUBSE"
         httpMethod: "PUT"
         uri: "arn:aws:apigateway:us-east-1:s3:path/{bucket}/{key}"
         responses:
