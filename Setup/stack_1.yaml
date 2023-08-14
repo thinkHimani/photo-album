@@ -41,7 +41,7 @@ Parameters:
     AllowedPattern: '[A-Za-z0-9-]+'
   GitHubOAuthToken:
     Type: String
-    Default: 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
+    Default: ACCESS_TOKEN
     NoEcho: true
 
 Resources:
